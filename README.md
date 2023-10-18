@@ -7,3 +7,6 @@ We have a little app that listens to the mic and compares it to sound samples. S
 
 It will then listen to the mic in the computer. 
 
+You can have a look at some of the experiments that led to this in the directory. 
+
+
