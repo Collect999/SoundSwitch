@@ -34,13 +34,13 @@ while True:
     signal = np.frombuffer(block, dtype=np.float32)
 
     # Compute the mel spectrogram
-    S = librosa.feature.melspectrogram(signal, sr=sr, n_mels=128)
+    S = librosa.feature.melspectrogram(y=signal, sr=sr, n_mels=128)
 
     # Convert to decibels
     log_S = librosa.power_to_db(S, ref=np.max)
 
     # Find the peak frequency in each frame
-    frequencies = librosa.core.time_frequency.mel_frequencies(n_mels=128, fmin=0, fmax=sr/2)
+    frequencies = librosa.mel_frequencies(n_mels=128, fmin=0, fmax=sr/2)
     peak_frequencies = frequencies[np.argmax(log_S, axis=0)]
 
     # Check if there is a peak frequency within the desired range for "ahh" sound
