@@ -22,11 +22,11 @@ sample_folder = os.path.join(application_path, 'sound-samples')
 
 # Read config file
 config = configparser.ConfigParser()
-config.read(config_path)
+config.read('config.ini')
 correlation_threshold = float(config['DEFAULT']['CorrelationThreshold'])
-debug = config.getboolean('DEFAULT', 'Debug')
+debug = bool(config.getboolean('DEFAULT', 'Debug'))
 key_to_press = config['DEFAULT']['KeyToPress']
-audioinput = config['DEFAULT']['AudioInput']
+audioinput = int(config['DEFAULT']['AudioInput'])
 
 # Load audio samples dynamically
 ahh_templates = []
@@ -86,7 +86,8 @@ def detection_loop(window):
 menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Exit']]
 
 # Initialize the tray
-tray = sg.SystemTray(menu=menu_def, filename='SoundSwitchIcon.ico')
+#tray = sg.SystemTray(menu=menu_def, filename='SoundSwitchIcon2.ico')
+tray = sg.SystemTray(menu=menu_def)
 
 # Start detection loop in a separate thread
 t = threading.Thread(target=detection_loop, args=(tray,))
