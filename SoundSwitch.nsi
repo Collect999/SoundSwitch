@@ -12,6 +12,9 @@ Section
     ; Set output path to the install directory
     SetOutPath $INSTDIR
     
+    # Copy the executable and other files from dist
+    File /r "dist\SoundSwitch\*.*"
+    
     ; Put your packaged EXE here
     File SoundSwitch.exe
     

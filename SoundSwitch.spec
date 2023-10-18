@@ -4,7 +4,7 @@
 block_cipher = None
 
 datas = [
-    ('config.ini', 'config'),
+    ('config.ini', '.'),
     ('sound-samples/', 'sound-samples')
 ]
 
