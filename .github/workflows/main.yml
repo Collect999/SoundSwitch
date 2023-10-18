@@ -1,9 +1,11 @@
 on:
-  workflow_dispatch: null
+  workflow_dispatch:
   push:
     branches:
-      - master
-  pull_request: null
+      - main
+  pull_request:
+
+
 jobs:
   build:
     runs-on: windows-latest
