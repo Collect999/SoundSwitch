@@ -7,6 +7,13 @@ import time
 import pyautogui
 
 
+audio1, sr = librosa.load("heather1.wav", sr=44100)
+audio2, _  = librosa.load("heather2.wav", sr=44100)
+#audio3, _  = librosa.load("heather3.wav", sr=44100)
+
+ahh_templates = [audio1, audio2]  # ..., audio20]
+debug = False
+
 # find audio devices
 def findAudioDevices():
 	p = pyaudio.PyAudio()
@@ -32,7 +39,6 @@ def highpass_filter(data, cutoff, fs, order=5):
     return y
 
 # Load the "ahhh" template
-ahh_template, sr = librosa.load("heather.wav", sr=44100)
 block_size = 2048
 correlation_threshold = 0.8  # Set an arbitrary threshold 
 
@@ -50,11 +56,14 @@ stream = p.open(format=pyaudio.paFloat32,
                 frames_per_buffer=block_size)
 
 # Function to perform cross-correlation and check if "ahhh" sound is detected
-def detect_ahh(audio_signal, template, threshold):
-    c = signal.correlate(audio_signal, template, mode='valid', method='fft')
-    peak = np.max(c)
-    print("Max Correlation Value:", peak)  # <-- Debugging print statement
-    return peak > threshold
+def detect_ahh(audio_signal, templates, threshold):
+    max_correlations = []
+    for template in templates:
+        c = np.correlate(audio_signal, template, mode='valid')
+        max_correlations.append(np.max(c))
+    
+    max_correlation = np.max(max_correlations)  # or np.mean(max_correlations) for averaging
+    return max_correlation > threshold
 
 # Continuously read audio from the microphone and detect sounds
 last_triggered_time = 0.8  # The last time an "ahhh" was detected
@@ -63,14 +72,19 @@ cooldown_time = 2.0  # Cooldown time in seconds
 while True:
     block = stream.read(block_size, exception_on_overflow=False)
     audio_signal = np.frombuffer(block, dtype=np.float32)
+    current_time = time.time()  # Get the current time
 
-    # Apply the high-pass filter here
-    filtered_signal = highpass_filter(audio_signal, cutoff=100.0, fs=sr)
+    max_correlation_value = detect_ahh(audio_signal, ahh_templates, correlation_threshold)  # Assume this function returns the max correlation value
+	if debug:
+	    print(f"Max Correlation Value: {max_correlation_value}, Timestamp: {current_time}")
 
-    current_time = time.time()
-
-    if detect_ahh(filtered_signal, ahh_template, correlation_threshold):
+    if max_correlation_value > correlation_threshold:
         if current_time - last_triggered_time > cooldown_time:
-            print("Ahh sound detected!")
+        	if debug:
+	            print("Ahh sound detected!")
             last_triggered_time = current_time
             # Trigger key press here
+
+
+
+
