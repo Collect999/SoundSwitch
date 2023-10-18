@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11.4
+      - name: Setup Python App
         run: |
           pip install -r requirements.txt 
           pyinstaller SoundSwitch.spec
