@@ -18,6 +18,7 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     application_path = os.path.dirname(__file__)
 config_path = os.path.join(application_path, 'settings.cfg')
+sample_folder = os.path.join(application_path, 'sound-samples')
 
 # Read config file
 config = configparser.ConfigParser()
@@ -28,7 +29,6 @@ key_to_press = config['DEFAULT']['KeyToPress']
 audioinput = config['DEFAULT']['AudioInput']
 
 # Load audio samples dynamically
-sample_folder = "path/to/your/folder/with/audio/samples"  # Replace with your folder path
 ahh_templates = []
 sample_files = [f for f in os.listdir(sample_folder) if f.endswith('.wav')]
 for f in sample_files:
