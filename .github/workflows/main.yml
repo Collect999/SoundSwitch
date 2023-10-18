@@ -1,40 +1,30 @@
 on:
-  workflow_dispatch:
+  workflow_dispatch: null
   push:
     branches:
       - master
-  pull_request:
-
+  pull_request: null
 jobs:
   build:
-    runs-on: windows-latest      
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Install NSIS
-      uses: repolevedavaj/install-nsis@v1.0.0
-      with:
-        nsis-version: 3.08
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-         python-version: '3.11.4' 
-      run:  |
-        pip install -r requirements.txt 
-        pyinstaller SoundSwitch.spec
-     - name: Make NSIS 
-      run:  |
-        & "C:\Program Files (x86)\NSIS\makensis.exe" "SoundSwitch.nsi"
-    #- name: Dump cert
-    #  if: github.repository == 'acecentre/relaykeys'
-    #  run:  |
-    #    [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String( "${{ secrets.CERTP12B64 }}" )) > win-cert.p12
-    #    Get-Content -Tail 2 win-cert.p12
-    #- name: Sign Windows Binary
-    #  if: github.repository == 'acecentre/relaykeys'
-    #  run:  |
-    #    & 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool.exe' sign /a /td sha256 /fd sha256 /v /f "win-cert.p12" /p "${{ secrets.CERTPASSWORD }}" /v "RelayKeys setup.exe"
-    - name: Upload exe
-      uses: actions/upload-artifact@v3
-      with:
-        name: 'Windows Release'
-        path: 'SoundSwitchInstaller.exe'
+      - uses: actions/checkout@v3
+      - name: Install NSIS
+        uses: repolevedavaj/install-nsis@v1.0.0
+        with:
+          nsis-version: 3.08
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11.4
+        run: |
+          pip install -r requirements.txt 
+          pyinstaller SoundSwitch.spec
+      - name: Make NSIS
+        run: |
+          & "C:\Program Files (x86)\NSIS\makensis.exe" "SoundSwitch.nsi"
+      - name: Upload exe
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows Release
+          path: SoundSwitchInstaller.exe
