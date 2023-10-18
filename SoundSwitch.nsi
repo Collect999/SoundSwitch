@@ -15,18 +15,6 @@ Section
     # Copy the executable and other files from dist
     File /r "dist\SoundSwitch\*.*"
     
-    ; Put your packaged EXE here
-    File SoundSwitch.exe
-    
-    ; Create a directory for sound-samples
-    CreateDirectory $INSTDIR\sound-samples
-    
-    ; Put sample audio files into the directory (assuming they are in a folder named 'sound-samples' in the same directory as this NSIS script)
-    File /r sound-samples\*.*
-    
-    ; Write example config.ini
-    File config.ini
-
     ; Create a shortcut on the desktop
     CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
     
