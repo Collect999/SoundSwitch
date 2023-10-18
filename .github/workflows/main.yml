@@ -10,10 +10,20 @@ jobs:
     runs-on: windows-latest      
     steps:
     - uses: actions/checkout@v3
+    - name: Install NSIS
+      uses: repolevedavaj/install-nsis@v1.0.0
+      with:
+        nsis-version: 3.08
     - name: Install Python
       run:  |
         pip install -r requirements.txt 
-        pyinstaller SoundSwitch.spec
+    - name: Create Executable
+        uses: sayyid5416/pyinstaller@v1
+        with:
+          spec: 'SoundSwitch.spec'
+          requirements: 'requirements.txt'
+     - name: Make NSIS 
+      run:  |
         & "C:\Program Files (x86)\NSIS\makensis.exe" "SoundSwitch.nsi"
     #- name: Dump cert
     #  if: github.repository == 'acecentre/relaykeys'
