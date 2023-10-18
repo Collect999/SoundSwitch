@@ -15,13 +15,12 @@ jobs:
       with:
         nsis-version: 3.08
     - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+         python-version: '3.11.4' 
       run:  |
         pip install -r requirements.txt 
-    - name: Create Executable
-        uses: sayyid5416/pyinstaller@v1
-        with:
-          spec: 'SoundSwitch.spec'
-          requirements: 'requirements.txt'
+        pyinstaller SoundSwitch.spec
      - name: Make NSIS 
       run:  |
         & "C:\Program Files (x86)\NSIS\makensis.exe" "SoundSwitch.nsi"
