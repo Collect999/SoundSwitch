@@ -4,3 +4,4 @@ PySimpleGUI
 scipy
 pyautogui
 pyinstaller
+pyaudio
