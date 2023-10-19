@@ -14,7 +14,8 @@ Section
     
     # Copy the executable and other files from dist
     File /r "dist\SoundSwitch\*.*"
-    
+	File "Icon.png"    
+	
     ; Create a shortcut on the desktop
     CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
     

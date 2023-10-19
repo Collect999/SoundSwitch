@@ -86,7 +86,7 @@ def detection_loop(window):
 menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Exit']]
 
 # Initialize the tray
-tray = sg.SystemTray(menu=menu_def, filename=r'SoundSwitchIcon32.png')
+tray = sg.SystemTray(menu=menu_def, filename=r'Icon.png')
 #tray = sg.SystemTray(menu=menu_def)
 
 # Start detection loop in a separate thread
