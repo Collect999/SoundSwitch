@@ -5,6 +5,7 @@ block_cipher = None
 
 datas = [
     ('SoundSwitchIcon.ico', '.'),
+    ('SoundSwitchImage.png', '.'),
     ('config.ini', '.'),
     ('sound-samples/', 'sound-samples')
 ]
