@@ -17,7 +17,7 @@ if getattr(sys, 'frozen', False):
     application_path = os.path.join(home_directory, 'AppData', 'Roaming', 'SoundSwitch')
 elif __file__:
     application_path = os.path.dirname(__file__)
-config_path = os.path.join(application_path, 'settings.cfg')
+config_path = os.path.join(application_path, 'config.ini')
 sample_folder = os.path.join(application_path, 'sound-samples')
 
 # Read config file
@@ -86,7 +86,7 @@ def detection_loop(window):
 menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Exit']]
 
 # Initialize the tray
-tray = sg.SystemTray(menu=menu_def, filename='SoundSwitchImage.png')
+tray = sg.SystemTray(menu=menu_def, filename=r'SoundSwitchIcon32.ico')
 #tray = sg.SystemTray(menu=menu_def)
 
 # Start detection loop in a separate thread
