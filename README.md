@@ -20,7 +20,7 @@ https://github.com/AceCentre/SoundSwitch/releases/download/1.0/SoundSwitchInstal
 Re: correlation_threshold
 
 correlation_threshold is a critical parameter that determines the sensitivity of the audio detection algorithm. It sets the minimum value that the cross-correlation between the real-time audio and the audio samples must reach for a match to be considered valid.
-A higher value makes the program less sensitive (fewer false positives), but it might miss some instances of the target sound. Conversely, a lower value makes the program more sensitive (more false positives) but increases the likelihood of detecting softer occurrences of the target sound.
+A higher value makes the program less sensitive (fewer false positives), but it might miss some instances of the target sound. Conversely, a lower value makes the program more sensitive (more false positives) but increases the likelihood of detecting softer occurrences of the target sound. **It ranges from -1 0 1**. A typical value maybe 0.8
 
 ## Code Structure
 
