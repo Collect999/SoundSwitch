@@ -18,9 +18,17 @@ Section
 	
     ; Create a shortcut on the desktop
     CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
-    
     CreateShortcut "$SMPROGRAMS\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
 
+	; Write run as admin batch script
+	; Create batch file for running the app as an admin
+	FileOpen $0 "$INSTDIR\RunAsAdmin.bat" "w"
+	FileWrite $0 '@echo off$\r$\n'
+	FileWrite $0 'runas /user:Administrator "$INSTDIR\SoundSwitch.exe"$\r$\n'
+	FileClose $0
+
+	; Create a shortcut on the desktop to run as admin
+	CreateShortcut "$DESKTOP\SoundSwitch (Run as Admin).lnk" "$INSTDIR\RunAsAdmin.bat"
     
     ; Write uninstaller
     WriteUninstaller $INSTDIR\Uninstall.exe
@@ -39,6 +47,7 @@ Section "Uninstall"
     ; Remove the shortcut
     Delete "$DESKTOP\SoundSwitch.lnk"
     Delete "$SMPROGRAMS\SoundSwitch.lnk"
+    Delete "$DESKTOP\SoundSwitch (Run as Admin).lnk"
     
     ; Remove the install directory
     RMDir $INSTDIR
