@@ -91,10 +91,10 @@ def detection_loop(windo, sr):
                 if debug:
                     print("Ahh sound detected!")
                 pyautogui.press(key_to_press)
-                tray.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
+                windo.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
                 # After a short delay, revert back to the original icon
                 time.sleep(0.5)
-                tray.change_icon(r'Icon.png')                
+                windo.change_icon(r'Icon.png')                
                 last_triggered_time = current_time
                 # Here you can send a message to your GUI or trigger other actions
 
