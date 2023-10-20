@@ -9,4 +9,24 @@ It will then listen to the mic in the computer.
 
 You can have a look at some of the experiments that led to this in the directory. 
 
+## Get up and running
+
+1. You need to make sound samples of your vocalisations. Keep them short and as clean as possible using the same recording technique. Save them as wav's. 
+2. Download and install the app
+3. Set the key stroke it is sending and other aspects in the config [See here](https://pyautogui.readthedocs.io/en/latest/keyboard.html#keyboard-keys)
+
+Re: correlation_threshold
+
+correlation_threshold is a critical parameter that determines the sensitivity of the audio detection algorithm. It sets the minimum value that the cross-correlation between the real-time audio and the audio samples must reach for a match to be considered valid.
+A higher value makes the program less sensitive (fewer false positives), but it might miss some instances of the target sound. Conversely, a lower value makes the program more sensitive (more false positives) but increases the likelihood of detecting softer occurrences of the target sound.
+
+## Code Structure
+
+
+- load_samples(): Loads audio samples from a designated folder.
+- findAudioDevices(): Lists available audio input devices.
+- detect_ahh(): Performs cross-correlation to detect specific sounds.
+- detection_loop(): Main loop where real-time audio is processed.
+
+
 
