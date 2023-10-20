@@ -19,6 +19,9 @@ Section
     ; Create a shortcut on the desktop
     CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
     
+    CreateShortcut "$SMPROGRAMS\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe"
+
+    
     ; Write uninstaller
     WriteUninstaller $INSTDIR\Uninstall.exe
 
@@ -35,6 +38,7 @@ Section "Uninstall"
     
     ; Remove the shortcut
     Delete "$DESKTOP\SoundSwitch.lnk"
+    Delete "$SMPROGRAMS\SoundSwitch.lnk"
     
     ; Remove the install directory
     RMDir $INSTDIR
