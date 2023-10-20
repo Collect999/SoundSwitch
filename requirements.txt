@@ -5,3 +5,4 @@ scipy
 pyautogui
 pyinstaller
 pyaudio
+psgtray
