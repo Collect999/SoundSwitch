@@ -43,7 +43,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='Icon.ico',  # Add this line
+    icon='Icon.ico', 
 )
 coll = COLLECT(
     exe,
