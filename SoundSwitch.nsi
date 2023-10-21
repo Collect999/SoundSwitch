@@ -17,7 +17,7 @@ Section
 	File "Icon.png"
 	File "IconOn.png"
 	File "config.ini"
-	File /r "sound-samples\*.*"
+	File /r "sound-samples\"
 	
 	; Create a batch file to run the application as administrator
 	StrCpy $1 'powershell -Command "Start-Process ''"$INSTDIR\SoundSwitch.exe"'' -Verb RunAs"$\r$\n'
@@ -44,6 +44,9 @@ Section "Uninstall"
 	; Remove the installed files
 	Delete $INSTDIR\SoundSwitch.exe
 	Delete $INSTDIR\SoundSampleRecorder.exe
+	Delete $INSTDIR\Icon.png
+	Delete $INSTDIR\IconOn.png
+	Delete $INSTDIR\config.ini
 	RMDir /r $INSTDIR\sound-samples
 	Delete $INSTDIR\config.ini
 	Delete $INSTDIR\RunAsAdmin.bat	; Added this line to remove the batch file
