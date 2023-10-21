@@ -23,7 +23,8 @@ jobs:
         run: |
           pip install -r requirements.txt 
           pyinstaller SoundSwitch.spec
-          pyinstaller --distpath dist\SoundSwitch SoundSampleRecorder.spec
+          pyinstaller SoundSampleRecorder.spec
+          copy dist\SoundSampleRecorder\SoundSampleRecorder.exe dist\SoundSwitch\
       - name: Make NSIS
         run: |
           & "C:\Program Files (x86)\NSIS\makensis.exe" "SoundSwitch.nsi"
