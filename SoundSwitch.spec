@@ -5,9 +5,7 @@ block_cipher = None
 
 datas = [
     ('IconOn.png', '.'),
-    ('Icon.png', '.'),
-    ('config.ini', '.'),
-    ('sound-samples/', 'sound-samples')
+    ('Icon.png', '.')
 ]
 
 a = Analysis(
