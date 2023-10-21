@@ -20,22 +20,14 @@ Section
 	File /r "sound-samples"
 	
 	; Create a batch file to run the application as administrator
-	FileOpen $0 "$INSTDIR\RunAsAdmin.bat" "w"
-	
-	; If FileOpen succeeds, $0 should be a valid handle
-	DetailPrint "File handle: $0"
-
-	; Writing '@echo off' to the file
+	; Write '@echo off' and a new line character to the file
 	FileWrite $0 '@echo off$\r$\n'
-	
-	; Writing the PowerShell command to the file
-	FileWrite $0 'powershell -Command "Start-Process ''$INSTDIR\SoundSwitch.exe'' -Verb RunAs"$\r$\n'
-
+	; Create the runas command string
+	StrCpy $1 'runas /user:Administrator "$INSTDIR\SoundSwitch.exe"$\r$\n'
+	; Write the runas command to the file
+	FileWrite $0 $1
 	; Close the file
 	FileClose $0
-
-	; Print end message for debugging
-	DetailPrint "Batch file should be written."
 	
 	; Create shortcuts on the desktop
 	CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe" 
