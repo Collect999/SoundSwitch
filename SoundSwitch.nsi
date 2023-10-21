@@ -47,6 +47,7 @@ Section "Uninstall"
 	Delete $INSTDIR\Icon.png
 	Delete $INSTDIR\IconOn.png
 	Delete $INSTDIR\config.ini
+	RMDir /r $INSTDIR\_internal
 	RMDir /r $INSTDIR\sound-samples
 	Delete $INSTDIR\config.ini
 	Delete $INSTDIR\RunAsAdmin.bat	; Added this line to remove the batch file
