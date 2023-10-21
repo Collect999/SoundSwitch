@@ -106,8 +106,8 @@ def detection_loop(windo, sr, cooldown_time):
 		audio_signal = np.frombuffer(block, dtype=np.float32)
 		current_time = time.time()
 		max_correlation_value = detect_ahh(audio_signal, ahh_templates, correlation_threshold)
-		if debug:
-			print(f"Max Correlation Value: {max_correlation_value}, Timestamp: {current_time}")
+		#if debug:
+			#print(f"Max Correlation Value: {max_correlation_value}, Timestamp: {current_time}")
 		if max_correlation_value > correlation_threshold:
 			if current_time - last_triggered_time > cooldown_time:
 				try:
@@ -124,7 +124,7 @@ def detection_loop(windo, sr, cooldown_time):
 
 def initialize_program():
 	global stop_thread, t
-	
+	#
 	# Debug log example
 	if debug:
 		logging.debug("initialize_program() called")
