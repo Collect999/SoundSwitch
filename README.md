@@ -14,7 +14,7 @@ You can have a look at some of the experiments that led to this in the directory
 
 1. You need to make sound samples of your vocalisations. Keep them short and as clean as possible using the same recording technique. Save them as wav's. You can use the 'SoundSampleRecoder' which is included if you wish - although you may need to trim the sound clips. 
 2. [Download and install the app](https://github.com/AceCentre/SoundSwitch/releases/latest/download/SoundSwitchInstaller.exe)
-3. Set the key stroke it is sending and other aspects in the config [See here](https://pyautogui.readthedocs.io/en/latest/keyboard.html#keyboard-keys)
+3. Set the key stroke it is sending and other aspects in the config (See Below for a list)
 
 Re: correlation_threshold
 
