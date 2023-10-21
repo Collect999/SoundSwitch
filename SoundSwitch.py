@@ -119,7 +119,11 @@ def detection_loop(windo, sr):
 			if current_time - last_triggered_time > cooldown_time:
 				if debug:
 					print("Ahh sound detected!")
-				pyautogui.press(key_to_press)
+				try:
+					pyautogui.press(key_to_press)
+				except Exception as e:
+					if args.debug:
+						logging.debug(f"Error occurred while pressing key: {e}")
 				windo.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
 				# After a short delay, revert back to the original icon
 				time.sleep(0.5)
