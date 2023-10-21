@@ -37,14 +37,15 @@ def save_wav(data, filename, sample_rate=44100):
 	wav_file.close()
 
 def get_audio_devices():
-	p = pyaudio.PyAudio()
-	device_count = p.get_device_count()
-	devices = []
-	for i in range(device_count):
-		device_info = p.get_device_info_by_index(i)
-		devices.append(device_info['name'])
-	p.terminate()
-	return devices
+    p = pyaudio.PyAudio()
+    device_count = p.get_device_count()
+    devices = []
+    for i in range(device_count):
+        device_info = p.get_device_info_by_index(i)
+        if device_info['maxInputChannels'] > 0:
+            devices.append(device_info['name'])
+    p.terminate()
+    return devices
 
 def record_audio(device_index, num_channels):
 	global recording, paused, audio_data, elapsed_time
