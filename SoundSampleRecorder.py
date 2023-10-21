@@ -139,7 +139,7 @@ def main():
 			sg.popup("All samples saved!")
 
 		elif event == "Open Directory":
-			os.system('explorer .')
+			os.system(f'explorer {os.path.realpath(sample_folder)}')
 
 	window.close()
 
