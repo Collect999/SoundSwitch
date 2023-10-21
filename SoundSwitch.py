@@ -17,15 +17,6 @@ import logging
 # Enable logging if debug flag is set
 # Initialize the argparse
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
-parser = argparse.ArgumentParser(description='Debugging mode for SoundSwitch.')
-parser.add_argument('--debug', action='store_true', help='enable debug mode')
-args = parser.parse_args()
-
-# Then modify your if args.debug: lines to check args.debug
-if args.debug:
-	logging.debug('Debug mode is on.')
-
-
 ahh_templates = []
 
 # Determine application and config paths
@@ -80,7 +71,7 @@ def detection_loop(windo, sr):
 	stop_thread = False	 # Reset when function starts
 	p = pyaudio.PyAudio()
 	
-	if args.debug:
+	if debug:
 		logging.debug(f"Initializing stream with input_device_index: {audioinput}, rate: {sr}")
 
 	
@@ -91,16 +82,15 @@ def detection_loop(windo, sr):
 					input_device_index=audioinput,
 					frames_per_buffer=2048)
 	last_triggered_time = 0	 # Initialize to zero for first loop
-	cooldown_time = float(config['DEFAULT']['CooldownTime'])
-
 	
-	if args.debug:
+	
+	if debug:
 		logging.debug("Stream initialized.")
 	
 
 	while True:
 		if stop_thread:
-			if args.debug:
+			if debug:
 				logging.debug("About to terminate stream.")
 			stream.stop_stream()  # Stop the audio stream
 			stream.close()	# Close the audio stream
@@ -109,7 +99,7 @@ def detection_loop(windo, sr):
 		try:
 			block = stream.read(2048, exception_on_overflow=False)
 		except Exception as e:
-			if args.debug:
+			if debug:
 				logging.debug(f"Exception caught while reading stream: {e}")	
 		audio_signal = np.frombuffer(block, dtype=np.float32)
 		current_time = time.time()
@@ -119,11 +109,11 @@ def detection_loop(windo, sr):
 		if max_correlation_value > correlation_threshold:
 			if current_time - last_triggered_time > cooldown_time:
 				if debug:
-					print("Ahh sound detected!")
+					logging.debug(f"Error occurred while pressing key: {e}. Ahh sound detected!")
 				try:
 					pyautogui.press(key_to_press)
 				except Exception as e:
-					if args.debug:
+					if debug:
 						logging.debug(f"Error occurred while pressing key: {e}")
 				windo.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
 				# After a short delay, revert back to the original icon
@@ -136,7 +126,7 @@ def initialize_program():
 	global stop_thread, t
 	
 	# Debug log example
-	if args.debug:
+	if debug:
 		logging.debug("initialize_program() called")
 		
 	# PySimpleGUI setup
