@@ -3,7 +3,7 @@
 !include "MUI2.nsh"
 
 ; General
-Outfile "SoundSwitchAndSampleRecorderInstaller.exe"
+Outfile "SoundSwitchInstaller.exe"
 InstallDir $APPDATA\SoundSwitch
 
 ; Default section
