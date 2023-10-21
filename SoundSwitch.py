@@ -35,6 +35,8 @@ correlation_threshold = float(config['DEFAULT']['CorrelationThreshold'])
 debug = bool(config.getboolean('DEFAULT', 'Debug'))
 key_to_press = config['DEFAULT']['KeyToPress']
 audioinput = int(config['DEFAULT']['AudioInput'])
+cooldown_time = float(config['DEFAULT']['CooldownTime'])
+
 
 def load_samples():
 	global ahh_templates  # Declare ahh_templates as global
@@ -65,7 +67,7 @@ def detect_ahh(audio_signal, templates, threshold):
 	return max_correlation > threshold
 
 # The function running the detection loop
-def detection_loop(windo, sr):
+def detection_loop(windo, sr, cooldown_time):
 	global stop_thread
 	global ahh_templates
 	stop_thread = False	 # Reset when function starts
@@ -108,13 +110,11 @@ def detection_loop(windo, sr):
 			print(f"Max Correlation Value: {max_correlation_value}, Timestamp: {current_time}")
 		if max_correlation_value > correlation_threshold:
 			if current_time - last_triggered_time > cooldown_time:
-				if debug:
-					logging.debug(f"Error occurred while pressing key: {e}. Ahh sound detected!")
 				try:
 					pyautogui.press(key_to_press)
 				except Exception as e:
 					if debug:
-						logging.debug(f"Error occurred while pressing key: {e}")
+						logging.debug(f"Error occurred while pressing key: {e}. Ahh sound detected!")
 				windo.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
 				# After a short delay, revert back to the original icon
 				time.sleep(0.5)
@@ -146,7 +146,7 @@ def initialize_program():
 	stop_thread = True
 	if 't' in globals():  # Check if the thread exists
 		t.join()  # Wait for the existing thread to finish
-	t = threading.Thread(target=detection_loop, args=(tray, sr))
+	t = threading.Thread(target=detection_loop, args=(tray, sr, cooldown_time))
 	t.start()
 	stop_thread = False
 	
@@ -159,7 +159,7 @@ def initialize_program():
 			stop_thread = True
 			t.join()  # Wait for the existing thread to finish
 			stop_thread = False
-			t = threading.Thread(target=detection_loop, args=(tray,sr))
+			t = threading.Thread(target=detection_loop, args=(tray,sr, cooldown_time))
 			t.start()  # Start a new detection thread
 		elif menu_item == 'Exit':
 			stop_thread = True	# Signal to stop the detection_loop thread
