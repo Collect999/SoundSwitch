@@ -17,7 +17,7 @@ Section
 	File "Icon.png"
 	File "IconOn.png"
 	File "config.ini"
-	File /r "sound-samples\"
+	File /r "sound-samples"
 	
 	; Create a batch file to run the application as administrator
 	StrCpy $1 'powershell -Command "Start-Process ''"$INSTDIR\SoundSwitch.exe"'' -Verb RunAs"$\r$\n'
