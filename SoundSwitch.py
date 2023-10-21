@@ -91,7 +91,8 @@ def detection_loop(windo, sr):
 					input_device_index=audioinput,
 					frames_per_buffer=2048)
 	last_triggered_time = 0	 # Initialize to zero for first loop
-	cooldown_time = 2.0	 # Cooldown time in seconds
+	cooldown_time = float(config['DEFAULT']['CooldownTime'])
+
 	
 	if args.debug:
 		logging.debug("Stream initialized.")
