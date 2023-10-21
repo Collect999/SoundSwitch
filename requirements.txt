@@ -6,3 +6,4 @@ pyautogui
 pyinstaller
 pyaudio
 psgtray
+sounddevice
