@@ -16,6 +16,7 @@ import logging
 
 # Enable logging if debug flag is set
 # Initialize the argparse
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 parser = argparse.ArgumentParser(description='Debugging mode for SoundSwitch.')
 parser.add_argument('--debug', action='store_true', help='enable debug mode')
 args = parser.parse_args()
