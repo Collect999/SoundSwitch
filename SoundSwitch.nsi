@@ -21,10 +21,9 @@ Section
 	FileOpen $0 "$INSTDIR\RunAsAdmin.bat" "w"
 	FileWrite $0 '@echo off$\r$\n'
 	FileWrite $0 'powershell -Command "Start-Process \\"'
-	FileWrite $0 "$INSTDIR\\SoundSwitch.exe"
+	FileWrite $0 "$INSTDIR\SoundSwitch.exe"
 	FileWrite $0 '\\" -Verb runAs"$\r$\n'
 	FileClose $0
-
 
 	
 	; Create shortcuts on the desktop
