@@ -20,10 +20,13 @@ Section
 	File /r "sound-samples"
 	
 	; Create a batch file to run the application as administrator
-	StrCpy $1 'powershell -Command "Start-Process ''"$INSTDIR\SoundSwitch.exe"'' -Verb RunAs"$\r$\n'
+	StrCpy $1 '@echo off$\r$\n'
+	StrCpy $2 'powershell -Command "Start-Process ''"$INSTDIR\SoundSwitch.exe"'' -Verb RunAs"$\r$\n'
+
 	FileOpen $0 "$INSTDIR\RunAsAdmin.bat" "w"
-	FileWrite $0 '@echo off$\r$\n'
 	FileWrite $0 $1
+	FileWrite $0 $2
+	FileClose $0
 	
 	; Create shortcuts on the desktop
 	CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe" 
