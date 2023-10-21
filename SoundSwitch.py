@@ -11,16 +11,19 @@ from scipy import signal
 from scipy.signal import butter, filtfilt
 import time
 import pyautogui
-
-# Command-line argument parsing
-parser = argparse.ArgumentParser(description='Sound Switch')
-parser.add_argument('--debug', action='store_true', help='Enable debug mode')
-args = parser.parse_args()
+import argparse
+import logging
 
 # Enable logging if debug flag is set
+# Initialize the argparse
+parser = argparse.ArgumentParser(description='Debugging mode for SoundSwitch.')
+parser.add_argument('--debug', action='store_true', help='enable debug mode')
+args = parser.parse_args()
+
+# Then modify your if args.debug: lines to check args.debug
 if args.debug:
-	logging.basicConfig(filename='debug.log', level=logging.DEBUG)
-	print("Debug mode enabled.")
+	logging.debug('Debug mode is on.')
+
 
 ahh_templates = []
 
@@ -177,4 +180,4 @@ def initialize_program():
 	tray.close()
 	window.close()
 
-initialize_program()
+initialize_program()	
