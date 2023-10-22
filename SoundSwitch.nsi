@@ -19,16 +19,14 @@ Section
 	File "config.ini"
 	File /r "sound-samples"
 	
-	; Create a batch file to run the application as administrator
-	; Write '@echo off' and a new line character to the file
+	; Write run as admin batch script
+	; Create batch file for running the app as an admin
+	FileOpen $0 "$INSTDIR\RunAsAdmin.bat" "w"
 	FileWrite $0 '@echo off$\r$\n'
-	; Create the runas command string
-	StrCpy $1 'runas /user:Administrator "$INSTDIR\SoundSwitch.exe"$\r$\n'
-	; Write the runas command to the file
-	FileWrite $0 $1
-	; Close the file
+	FileWrite $0 'runas /user:Administrator "$INSTDIR\SoundSwitch.exe"$\r$\n'
 	FileClose $0
-	
+
+
 	; Create shortcuts on the desktop
 	CreateShortcut "$DESKTOP\SoundSwitch.lnk" "$INSTDIR\SoundSwitch.exe" 
 	CreateShortcut "$DESKTOP\SoundSwitch-AsAdmin.lnk" "$INSTDIR\RunAsAdmin.bat" 
