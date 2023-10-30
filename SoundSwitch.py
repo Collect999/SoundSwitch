@@ -36,7 +36,6 @@ config_path = os.path.join(application_path, 'config.ini')
 # Read config file
 config = configparser.ConfigParser()
 config.read('config.ini')
-correlation_threshold = float(config['DEFAULT']['CorrelationThreshold'])
 debug = bool(config.getboolean('DEFAULT', 'Debug'))
 key_to_press = config['DEFAULT']['KeyToPress']
 audioinput = int(config['DEFAULT']['AudioInput'])
