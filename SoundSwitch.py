@@ -49,6 +49,7 @@ def load_clips():
     
     positive_clips = []
     background_noises = []
+    sr = None  # Initialize sample rate to None
     
     for f in os.listdir(positive_path):
         if f.endswith('.wav'):
@@ -57,8 +58,10 @@ def load_clips():
             
     for f in os.listdir(negative_path):
         if f.endswith('.wav'):
-            audio, sr = librosa.load(os.path.join(negative_path, f), sr=44100)
+            audio, _ = librosa.load(os.path.join(negative_path, f), sr=44100)  # We assume the sample rate is the same for all clips
             background_noises.append(audio)
+            
+    return sr  # Return the sample rate
 
 
 # Helper function to find the audio devices. 
@@ -159,9 +162,11 @@ def detection_loop(windo, sr, cooldown_time):
 		except Exception as e:
 			if debug:
 				logging.debug(f"Exception caught while reading stream: {e}")	
+			break
 		audio_signal = np.frombuffer(block, dtype=np.float32)
 		current_time = time.time()
 		detected = detect_ahh(audio_signal, sr)
+		
 		if detected:
 			if current_time - last_triggered_time > cooldown_time:
 				try:
