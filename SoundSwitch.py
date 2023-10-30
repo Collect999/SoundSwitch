@@ -183,7 +183,7 @@ def initialize_program():
 		logging.debug("initialize_program() called")
 		
 	# PySimpleGUI setup
-	menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Open Sound Files', 'Reload Samples','Exit']]
+	menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Open Sound Files', 'Retrain model','Exit']]
 	tooltip = 'Tooltip'
 	layout = [[sg.T('Empty Window', key='-T-')]]
 	window = sg.Window('Window Title', layout, finalize=True, enable_close_attempted_event=True, alpha_channel=0)
@@ -211,7 +211,7 @@ def initialize_program():
 	while True:
 		event, values = window.read()
 		menu_item = values[event]
-		if menu_item == 'Reload Samples':
+		if menu_item == 'Retrain model':
 			load_clips()	# Reload the audio samples
 			stop_thread = True
 			t.join()  # Wait for the existing thread to finish
