@@ -194,7 +194,7 @@ def initialize_program():
 	tray = SystemTray(menu=menu_def, single_click_events=False, tooltip=tooltip, window=window, icon=r'Icon.png')
 	tray.show_message('Sound Switch', 'Sound Switchs Started!')
 
-	sr = load_samples()	 # get the sample rate	  
+	sr = load_clips()	 # get the sample rate	  
 	
 	# Train the classifier
 	train_svm_classifier(positive_clips, background_noises, sr=44100)
@@ -212,7 +212,7 @@ def initialize_program():
 		event, values = window.read()
 		menu_item = values[event]
 		if menu_item == 'Reload Samples':
-			load_samples()	# Reload the audio samples
+			load_clips()	# Reload the audio samples
 			stop_thread = True
 			t.join()  # Wait for the existing thread to finish
 			stop_thread = False
