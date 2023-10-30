@@ -7,23 +7,17 @@ import sys
 import PySimpleGUI as sg
 from psgtray import SystemTray
 import threading
+from scipy import signal
+from scipy.signal import butter, filtfilt
 import time
 import pyautogui
+import argparse
 import logging
-# New SVM technique 
-from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
-
 
 # Enable logging if debug flag is set
 # Initialize the argparse
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 ahh_templates = []
-# Global variables
-clf = None	# The SVM classifier
-scaler = StandardScaler()  # Feature scaler
-
 
 # Determine application and config paths
 if getattr(sys, 'frozen', False):
@@ -32,6 +26,7 @@ if getattr(sys, 'frozen', False):
 elif __file__:
 	application_path = os.path.dirname(__file__)
 config_path = os.path.join(application_path, 'config.ini')
+sample_folder = os.path.join(application_path, 'sound-samples')
 
 # Read config file
 config = configparser.ConfigParser()
@@ -42,24 +37,14 @@ key_to_press = config['DEFAULT']['KeyToPress']
 audioinput = int(config['DEFAULT']['AudioInput'])
 cooldown_time = float(config['DEFAULT']['CooldownTime'])
 
-def load_clips():
-    global positive_clips, background_noises, application_path  # Declare as global if you plan to use them globally
-    positive_path = os.path.join(application_path, 'positive-samples')
-    negative_path = os.path.join(application_path, 'negative-samples')
-    
-    positive_clips = []
-    background_noises = []
-    
-    for f in os.listdir(positive_path):
-        if f.endswith('.wav'):
-            audio, sr = librosa.load(os.path.join(positive_path, f), sr=44100)
-            positive_clips.append(audio)
-            
-    for f in os.listdir(negative_path):
-        if f.endswith('.wav'):
-            audio, sr = librosa.load(os.path.join(negative_path, f), sr=44100)
-            background_noises.append(audio)
 
+def load_samples():
+	global ahh_templates  # Declare ahh_templates as global
+	sample_files = [f for f in os.listdir(sample_folder) if f.endswith('.wav')]
+	for f in sample_files:
+		audio, sr = librosa.load(os.path.join(sample_folder, f), sr=44100)
+		ahh_templates.append(audio)
+	return sr  # return sample rate
 
 # Helper function to find the audio devices. 
 def findAudioDevices():
@@ -72,60 +57,19 @@ def findAudioDevices():
 			device_info += f"Input Device ID {i} - {p.get_device_info_by_host_api_device_index(0, i).get('name')}\n"
 	sg.popup('Audio Devices', device_info)
 
-
-
-def extract_combined_features(audio, sr):
-	mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
-	chroma = librosa.feature.chroma_stft(y=audio, sr=sr)
-	spectral_contrast = librosa.feature.spectral_contrast(y=audio, sr=sr)
-
-	# Take the mean of each feature to use as the feature vector
-	mfccs_mean = np.mean(mfccs, axis=1)
-	chroma_mean = np.mean(chroma, axis=1)
-	spectral_contrast_mean = np.mean(spectral_contrast, axis=1)
-
-	# Combine the features into a single array
-	combined_features = np.concatenate((mfccs_mean, chroma_mean, spectral_contrast_mean))
-
-	return combined_features
-
-
-def train_svm_classifier(positive_clips, background_noises, sr=44100):
-	global clf, scaler
-
-	X_train = []
-	y_train = []
-
-	for clip in positive_clips:
-		features = extract_combined_features(clip, sr)
-		X_train.append(features)
-		y_train.append(1)  # Label for positive clips
-
-	for noise in background_noises:
-		features = extract_combined_features(noise, sr)
-		X_train.append(features)
-		y_train.append(0)  # Label for negative clips
-
-	# Scale features
-	X_train = scaler.fit_transform(X_train)
-
-	# Train the classifier
-	clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
-	clf.fit(X_train, y_train)
-
-# Function to detect sound using the trained SVM classifier
-def detect_ahh(audio_signal, sr):
-	global clf, scaler
-
-	features = extract_combined_features(audio_signal, sr)
-	scaled_features = scaler.transform([features])	# Note the [features] to make it 2D array
-	prediction = clf.predict(scaled_features)
-	return prediction[0] == 1  # 1 is the label for positive clips
-
+# Function to perform cross-correlation
+def detect_ahh(audio_signal, templates, threshold):
+	max_correlations = []
+	for template in templates:
+		c = np.correlate(audio_signal, template, mode='valid')
+		max_correlations.append(np.max(c))
+	max_correlation = np.max(max_correlations)
+	return max_correlation > threshold
 
 # The function running the detection loop
 def detection_loop(windo, sr, cooldown_time):
 	global stop_thread
+	global ahh_templates
 	stop_thread = False	 # Reset when function starts
 	p = pyaudio.PyAudio()
 	
@@ -161,8 +105,10 @@ def detection_loop(windo, sr, cooldown_time):
 				logging.debug(f"Exception caught while reading stream: {e}")	
 		audio_signal = np.frombuffer(block, dtype=np.float32)
 		current_time = time.time()
-		detected = detect_ahh(audio_signal, sr)
-		if detected:
+		max_correlation_value = detect_ahh(audio_signal, ahh_templates, correlation_threshold)
+		#if debug:
+			#print(f"Max Correlation Value: {max_correlation_value}, Timestamp: {current_time}")
+		if max_correlation_value > correlation_threshold:
 			if current_time - last_triggered_time > cooldown_time:
 				try:
 					pyautogui.press(key_to_press)
@@ -174,6 +120,7 @@ def detection_loop(windo, sr, cooldown_time):
 				time.sleep(0.5)
 				windo.change_icon(r'Icon.png')				  
 				last_triggered_time = current_time
+				# Here you can send a message to your GUI or trigger other actions
 
 def initialize_program():
 	global stop_thread, t
@@ -192,13 +139,9 @@ def initialize_program():
 	
 	# Initialize the tray
 	tray = SystemTray(menu=menu_def, single_click_events=False, tooltip=tooltip, window=window, icon=r'Icon.png')
-	tray.show_message('Sound Switch', 'Sound Switchs Started!')
+	tray.show_message('Sound Switch', 'Sound Switch Started!')
 
 	sr = load_samples()	 # get the sample rate	  
-	
-	# Train the classifier
-	train_svm_classifier(positive_clips, background_noises, sr=44100)
-
 	# Start detection loop in a separate thread
 	stop_thread = True
 	if 't' in globals():  # Check if the thread exists
