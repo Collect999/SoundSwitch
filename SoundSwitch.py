@@ -14,7 +14,7 @@ import logging
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
-
+import time
 
 # Enable logging if debug flag is set
 # Initialize the argparse
@@ -42,25 +42,30 @@ audioinput = int(config['DEFAULT']['AudioInput'])
 cooldown_time = float(config['DEFAULT']['CooldownTime'])
 
 def load_clips():
-    global positive_clips, background_noises, application_path  # Declare as global if you plan to use them globally
-    positive_path = os.path.join(application_path, 'positive-samples')
-    negative_path = os.path.join(application_path, 'negative-samples')
-    
-    positive_clips = []
-    background_noises = []
-    sr = None  # Initialize sample rate to None
-    
-    for f in os.listdir(positive_path):
-        if f.endswith('.wav'):
-            audio, sr = librosa.load(os.path.join(positive_path, f), sr=44100)
-            positive_clips.append(audio)
-            
-    for f in os.listdir(negative_path):
-        if f.endswith('.wav'):
-            audio, _ = librosa.load(os.path.join(negative_path, f), sr=44100)  # We assume the sample rate is the same for all clips
-            background_noises.append(audio)
-            
-    return sr  # Return the sample rate
+	global positive_clips, background_noises, application_path	# Declare as global if you plan to use them globally
+	start_time = time.time()
+	logging.debug(f"Start loading clips at {start_time}")
+	positive_path = os.path.join(application_path, 'positive-samples')
+	negative_path = os.path.join(application_path, 'negative-samples')
+	
+	positive_clips = []
+	background_noises = []
+	sr = None  # Initialize sample rate to None
+	
+	for f in os.listdir(positive_path):
+		if f.endswith('.wav'):
+			logging.debug(f"Loading positive clip: {f}")
+			audio, sr = librosa.load(os.path.join(positive_path, f), sr=44100)
+			positive_clips.append(audio)
+			
+	for f in os.listdir(negative_path):
+		if f.endswith('.wav'):
+			logging.debug(f"Loading negative clip: {f}")
+			audio, _ = librosa.load(os.path.join(negative_path, f), sr=44100)  # We assume the sample rate is the same for all clips
+			background_noises.append(audio)
+	end_time = time.time()
+	logging.debug(f"Finished loading clips at {end_time}, took {end_time - start_time} seconds")
+	return sr  # Return the sample rate
 
 
 # Helper function to find the audio devices. 
@@ -131,8 +136,7 @@ def detection_loop(windo, sr, cooldown_time):
 	stop_thread = False	 # Reset when function starts
 	p = pyaudio.PyAudio()
 	
-	if debug:
-		logging.debug(f"Initializing stream with input_device_index: {audioinput}, rate: {sr}")
+	logging.debug(f"Initializing stream with input_device_index: {audioinput}, rate: {sr}")
 
 	
 	stream = p.open(format=pyaudio.paFloat32,
@@ -144,23 +148,22 @@ def detection_loop(windo, sr, cooldown_time):
 	last_triggered_time = 0	 # Initialize to zero for first loop
 	
 	
-	if debug:
-		logging.debug("Stream initialized.")
+	logging.debug("Stream initialized.")
 	
 
 	while True:
+		capture_time = time.time()
 		if stop_thread:
-			if debug:
-				logging.debug("About to terminate stream.")
+			logging.debug("About to terminate stream.")
 			stream.stop_stream()  # Stop the audio stream
 			stream.close()	# Close the audio stream
 			p.terminate()  # Terminate the PyAudio object
 			break  # Break out of the loop
 		try:
 			block = stream.read(2048, exception_on_overflow=False)
+			logging.debug(f"Captured audio block of size: {len(block)} at {capture_time}")
 		except Exception as e:
-			if debug:
-				logging.debug(f"Exception caught while reading stream: {e}")	
+			logging.debug(f"Exception caught while reading stream at {capture_time}: {e}")	
 			break
 		audio_signal = np.frombuffer(block, dtype=np.float32)
 		current_time = time.time()
@@ -171,8 +174,7 @@ def detection_loop(windo, sr, cooldown_time):
 				try:
 					pyautogui.press(key_to_press)
 				except Exception as e:
-					if debug:
-						logging.debug(f"Error occurred while pressing key: {e}. Ahh sound detected!")
+					logging.debug(f"Error occurred while pressing key: {e}. Ahh sound detected!")
 				windo.change_icon(r'IconOn.png')  # Set this variable to your inverted icon
 				# After a short delay, revert back to the original icon
 				time.sleep(0.5)
@@ -181,10 +183,8 @@ def detection_loop(windo, sr, cooldown_time):
 
 def initialize_program():
 	global stop_thread, t
-	#
-	# Debug log example
-	if debug:
-		logging.debug("initialize_program() called")
+	
+	logging.debug("initialize_program() called")
 		
 	# PySimpleGUI setup
 	menu_def = ['File', ['Show Audio Devices', 'Open Config', 'Open Sound Files', 'Retrain model','Exit']]
