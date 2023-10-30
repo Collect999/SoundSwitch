@@ -7,3 +7,4 @@ pyinstaller
 pyaudio
 psgtray
 sounddevice
+scikit-learn>=0.24.2  # or the version you are using
